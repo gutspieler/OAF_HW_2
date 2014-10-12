@@ -56,16 +56,17 @@ public:
 
 
 private:
+	
 	//listaelem
 	struct Node
 	{
 		
-		short value;//érték
+		int value;//érték
 		Node* next;//következõ
 		Node* prev;//elõzõ
 
 
-		Node(short v, Node* n = NULL, Node *p = NULL) : value(v), next(n), prev(p) {};
+		Node(int v, Node* n = NULL, Node *p = NULL) : value(v), next(n), prev(p) {};
 	};
 	
 	int size;//lista mérete

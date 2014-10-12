@@ -136,7 +136,7 @@ BigInt operator+(const BigInt& a, const BigInt& b)
 	else if (b.last == NULL && a.last == NULL);
 	else
 	{
-		unsigned long long carrier = 0;	// a maradék tárolására létrehozott változó
+		int carrier = 0;	// a maradék tárolására létrehozott változó
 		BigInt::Node *q = new BigInt::Node((a.last->value + b.last->value) % 10,NULL, NULL);
 		carrier = (a.last->value + b.last->value) / 10;
 		c.size++;
@@ -185,7 +185,7 @@ BigInt operator*(const BigInt& a, const int c)
 {
 	BigInt r;
 	r.size = 0;
-	unsigned long long carrier;
+	long long carrier;
 	BigInt::Node *q = new BigInt::Node((a.last->value*c) % 10, NULL, NULL);
 	carrier = (a.last->value*c) / 10;
 	r.size++;
