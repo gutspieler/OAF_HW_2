@@ -31,7 +31,7 @@ public:
 	//beolvasás
 	friend istream& operator>>(istream& s, BigInt& a);
 	//kiírás
-	friend ostream& operator<<(ostream& s, BigInt& a);
+	friend ostream& operator<<(ostream& s,  const BigInt& a);
 
 	//matematikai mûveletek
 	friend BigInt operator+(const BigInt& a, const BigInt& b);
@@ -47,15 +47,13 @@ public:
 
 
 	////////////////////////////////TODO: iterátor/////////////////////////
-
-	//bejáró mûveletek
-	int Current() const { return current->value; }
-	void First(){ current = first; }
-	bool End()  const { return current == NULL; }
-	void Next() { current = current->next; }
+	
+	//bejáró mûveletek-helytt kéne iterátor
+	
 
 
 private:
+	
 	
 	//listaelem
 	struct Node
@@ -67,12 +65,15 @@ private:
 
 
 		Node(int v, Node* n = NULL, Node *p = NULL) : value(v), next(n), prev(p) {};
+	
+		
 	};
 	
 	int size;//lista mérete
 	Node* first;//lista elsõ eleme
 	Node* last;//lista utolsó eleme
 	Node* current;//bejáráskor lista aktuális eleme
+	
 };
 
 

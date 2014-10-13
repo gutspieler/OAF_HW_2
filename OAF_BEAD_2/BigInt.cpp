@@ -34,13 +34,15 @@ BigInt::~BigInt()
 //lsta felépítése paraméterül kapott string alapján
 BigInt::BigInt(string s)
 {
-	if (s[0] = '-') throw NOTBIG; //ha negatív
+	if (s[0] == '-') throw NOTBIG; //ha negatív
 
-	first = new Node(s[0] - 48);
+	int j = s[0];
+	if (j < 48 || j > 57) throw WRONG_VALUE;
+	first = new Node(j - 48);
 	last = first;
 	size = s.length();
 
-	int j;
+	
 	for (int i = 1; i < size; i++)
 	{
 
@@ -60,13 +62,20 @@ BigInt::BigInt(string s)
 //lista felülírása
 void BigInt::ChangeNumber(string s)
 {
+	Node* p = first;
+	while (p != NULL){
+		Node* q = p->next;
+		delete p;
+		p = q;
+	}
 	if (s[0] == '-') throw NOTBIG;
-
+	int j = s[0];
+	if (j < 48 || j > 57) throw WRONG_VALUE;
 	first = new Node(s[0] - 48);
 	last = first;
 	size = s.length();
 
-	int j;
+	
 	for (int i = 1; i < size; i++)
 	{
 		j = s[i];
@@ -82,12 +91,12 @@ void BigInt::ChangeNumber(string s)
 
 }
 //kiírás
-ostream& operator<<(std::ostream& s, BigInt& a)
+ostream& operator<<(std::ostream& s, const BigInt& a)
 {
 	//lista bejárása és aktuális elem kiírása
-	for (a.First(); !a.End(); a.Next()){
-		cout << a.Current();
-	}
+	for (const BigInt::Node *p = a.first; p; p = p->next) {
+		s << p->value;
+	};
 
 	return s;
 }
