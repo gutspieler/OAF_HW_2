@@ -223,7 +223,7 @@ BigInt operator*(const BigInt& a, const BigInt& b)
 	BigInt t, r;
 	BigInt::Node* pt;	
 	BigInt::Node* g = b.last;
-
+	r.size = 0;
 	BigInt::Node* temp;
 	t = (a*g->value);
 
@@ -231,7 +231,7 @@ BigInt operator*(const BigInt& a, const BigInt& b)
 
 	BigInt::Node* pr = new BigInt::Node(pt->value, NULL, NULL);
 	r.last = pr;
-	
+	r.size++;
 	temp = pr;
 	g = g->prev;
 	while (g!=NULL)
@@ -239,15 +239,14 @@ BigInt operator*(const BigInt& a, const BigInt& b)
 		
 		t.last = t.last->prev;
 		
-		
 		t.last->next = NULL;
 		t=(t + (a*g->value));		
-		
+		delete pt;
 		BigInt::Node* pt = t.last;
 		
 		temp = pr;
 		pr = new BigInt::Node(pt->value,temp, NULL);
-		
+		r.size++;
 		g = g->prev;
 		temp->prev = pr;
 	}
@@ -258,13 +257,17 @@ BigInt operator*(const BigInt& a, const BigInt& b)
 		
 		temp = pr;
 		pr = new BigInt::Node(pt->value, temp, NULL);
-		
+		r.size++;
 		pt = pt->prev;
 		temp->prev = pr;
+		
 	}
 	temp = pr;
-	pr = new BigInt::Node(pt->value, temp, NULL);
+	pr = new BigInt::Node(pt->value, temp, NULL);	
+	r.size++;
 	r.first = pr;
+	
+	t.~BigInt();
 	return r;
 	
 	

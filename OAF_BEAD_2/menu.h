@@ -25,7 +25,7 @@ public:
 		} while (!r);
 
 		do{
-			bool r = true;
+			r = true;
 			try
 			{
 				cout << "b: ";
