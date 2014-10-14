@@ -29,9 +29,8 @@ BigInt::BigInt(const BigInt& s){
 //destruktor
 BigInt::~BigInt()
 {
-	while (first->next != last){ Node *p = first->next; first->next = p->next; delete p; }
-	delete first;
-	delete last;
+	while (first != NULL){ Node *p = first; first = p->next; delete p; }
+	
 }
 //konstruktor
 //lsta felépítése paraméterül kapott string alapján
