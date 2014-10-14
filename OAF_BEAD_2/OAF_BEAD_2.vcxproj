@@ -18,6 +18,7 @@
     <ClCompile Include="BigInt.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="iterator.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{278B0D15-C4E8-4BEA-B5C9-20E747A51E1F}</ProjectGuid>

@@ -37,9 +37,10 @@ void Menu::Run(){
 			cout << "b= " << b << endl;
 			break;
 		case 3: //a+b
-			cout << "a+b= " << a + b << endl;
+			cout << "a+b= " << (a + b) << endl;
 			break;
 		case 4: //a*b
+
 			cout << "a*b= " << a*b << endl;
 			break;
 			

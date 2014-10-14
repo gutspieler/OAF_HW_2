@@ -39,12 +39,14 @@ public:
 
 			}
 		} while (!r);
+		
 	}
 	void Run();
 private:
 	void MenuWrite();
 	BigInt a;
 	BigInt b;
+	BigInt c;
 	int IsNaN(string text);
 };
 
