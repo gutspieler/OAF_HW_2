@@ -8,17 +8,18 @@ using namespace std;
 //copy konstruktor
 BigInt::BigInt(const BigInt& s){
 
-	if (s.first->next == s.last) BigInt();
+	if (s.first == NULL) BigInt();
 		
 	
 	else{
 		size = s.size;	
-		first = new Node();
-		last = new Node();
-		Node* cur = first;
-		for (BigInt::const_iterator it = s.begin(); it != s.last; ++it) {
-			last->prev = cur->next = new Node(*it, last, cur);
-			cur = cur->next;
+		Node* cur = first = last=NULL;
+		Node* temp = NULL;
+		for (BigInt::const_iterator it = s.begin(); it != s.end(); ++it) {
+			last = cur = new Node(*it, NULL,temp );
+			if (first == NULL)first =cur;
+			else cur->prev->next = cur;
+			temp = cur;
 		}
 
 
@@ -37,21 +38,24 @@ BigInt::~BigInt()
 BigInt::BigInt(string s)
 {
 	if (s[0] == '-') throw NOTBIG; //ha negatív
-
-	int j;
-	first = new Node();
-	last = new Node();
-	Node* cur = first;
-	size = s.length();
+	Node* cur;
+	int j=s[0];
+	if (j >= 48 && j <= 57)
+	{
+		cur = first = last = new Node(j - 48, NULL, NULL);
+		size = s.length();
+	}
+	else
+		throw WRONG_VALUE;
 
 	
-	for (int i = 0; i < size; i++)
+	for (int i = 1; i < size; i++)
 	{
 
 		j = s[i];
 		if (j >= 48 && j <= 57)
 		{
-			last->prev = cur->next = new Node(j - 48, last, cur);
+			last = cur->next = new Node(j - 48, NULL, cur);
 			cur = cur->next;
 		}
 
@@ -64,28 +68,27 @@ BigInt::BigInt(string s)
 //lista felülírása
 void BigInt::ChangeNumber(string s)
 {
-	Node* p = first->next;
-	while (p != last){
-		Node* q = p->next;
-		delete p;
-		p = q;
-	}
-	if (s[0] == '-') throw NOTBIG; //ha negatív
 
-	int j;
-	first = new Node();
-	last = new Node();
-	Node* cur = first;
-	size = s.length();
 	
+	if (s[0] == '-') throw NOTBIG; //ha negatív
+	while (first != NULL){ Node *p = first; first = p->next; delete p; }
+	Node* cur;
+	int j = s[0];
+	if (j >= 48 && j <= 57)
+	{
+		cur = first = last = new Node(j - 48, NULL, NULL);
+		size = s.length();
+	}
+	else throw WRONG_VALUE;
 
-	for (int i = 0; i < size; i++)
+
+	for (int i = 1; i < size; i++)
 	{
 
 		j = s[i];
 		if (j >= 48 && j <= 57)
 		{
-			last->prev = cur->next = new Node(j - 48, last, cur);
+			last = cur->next = new Node(j - 48, NULL, cur);
 			cur = cur->next;
 		}
 
@@ -98,7 +101,7 @@ void BigInt::ChangeNumber(string s)
 ostream& operator<<(std::ostream& s, const BigInt& a)
 {
 	//lista bejárása és aktuális elem kiírása
-	for (BigInt::const_iterator it = a.begin(); it != a.last; it++) {
+	for (BigInt::const_iterator it = a.begin(); it != a.end(); it++) {
 		s << *it;
 	};
 
@@ -108,20 +111,18 @@ ostream& operator<<(std::ostream& s, const BigInt& a)
 //az operátor értékül adja a bal oldalon álló listának a jobb oldalon álló listát
 BigInt& BigInt::operator=(const BigInt& s){
 	if (&s == this) return *this;
-	Node* p = first->next;
-	while (p != last){
-		Node* q = p->next;
-		delete p;
-		p = q;
-	}	
+	while (first != NULL){ Node *p = first; first = p->next; delete p; }
 	
 		
-		Node* cur = first;
-		size = s.size;
-		for (BigInt::const_iterator it = s.begin(); it != s.last; ++it) {
-			last->prev = cur->next = new Node(*it, last, cur);
-			cur = cur->next;
-		}
+	size = s.size;
+	Node* cur = first = last = NULL;
+	Node* temp = NULL;
+	for (BigInt::const_iterator it = s.begin(); it != s.end(); ++it) {
+		last = cur = new Node(*it, NULL, temp);
+		if (first == NULL)first = cur;
+		else cur->prev->next = cur;
+		temp = cur;
+	}
 
 
 
@@ -143,34 +144,40 @@ istream& operator>>(istream& s, BigInt& a)
 BigInt operator+(const BigInt& a, const BigInt& b)
 {
 	BigInt c;
-	if (a.first->next == a.last) throw BigInt::NOTINIT;
-	else if (b.first->next == b.last) throw BigInt::NOTINIT;
-	else if (b.first->next == b.last && a.first->next == a.last)throw BigInt::NOTINIT;
+	if (a.first == NULL) throw BigInt::NOTINIT;
+	else if (b.first ==NULL) throw BigInt::NOTINIT;
+	else if (b.first == NULL && a.first == NULL)throw BigInt::NOTINIT;
 	else
 	{
 		
 		int carrier = 0;	// a maradék tárolására létrehozott változó
 		BigInt::Node *q;
-		BigInt::Node* g = a.last->prev;
-		BigInt::Node* p = b.last->prev;
-		BigInt::Node* temp = c.last;
-		while (p !=b.first || g != a.first) //amíg mindkettõ el nem fogy
+		BigInt::Node* g = a.last;
+		BigInt::Node* p = b.last;
+		BigInt::Node* temp;
+		carrier = carrier + p->value;
+		p = p->prev;
+		carrier = carrier + g->value;
+		g = g->prev;
+		c.first=c.last=temp= q = new BigInt::Node(carrier % 10, NULL, NULL); //új listaelem
+		carrier = (carrier / 10);
+		
+		while (p !=NULL || g != NULL) //amíg mindkettõ el nem fogy
 		{
 			
-
-			if (p !=b.first) //ha b nem fogy el
+			if (p !=NULL) //ha b nem fogy el
 			{
 				carrier = carrier + p->value;
 				p = p->prev;
 			}
-			if (g !=a.first) //ha a nem fogy el
+			if (g !=NULL) //ha a nem fogy el
 			{
 				carrier = carrier + g->value;
 				g = g->prev;
 			}
-			q = new BigInt::Node(carrier % 10, temp, c.first); //új listaelem
+			q = new BigInt::Node(carrier % 10, temp, NULL); //új listaelem
 			c.size++;
-			temp->prev=c.first->next = q;
+			c.first=temp->prev = q;
 			carrier = (carrier / 10); //maradék
 			temp = q;
 			
@@ -182,13 +189,16 @@ BigInt operator+(const BigInt& a, const BigInt& b)
 			
 			q = new BigInt::Node(carrier, temp, c.first); //maradék hozzáfûzése a lista végéhez
 			c.size++;
-			temp->prev = c.first->next = q;
+			temp->prev = c.first = q;
 		}
 		
 	}
+	cout << c.Size() << endl;
 	return c;
 }
-//BigInt szorzása konstansal
+//BigInt szorzása int-el
+//Bemenet: const BigInt&, const int
+//kimenet: BigInt
 BigInt operator*(const BigInt& a, const int c)
 {
 	BigInt r;
@@ -196,18 +206,25 @@ BigInt operator*(const BigInt& a, const int c)
 	long long carrier=0;
 	r.size++;
 	BigInt::Node* q;
-	BigInt::Node* g = a.last->prev;
-	BigInt::Node* temp = r.last;
+	BigInt::Node* g = a.last;
+	BigInt::Node* temp;
+	carrier = carrier + g->value*c;
+	q = new BigInt::Node(carrier % 10, NULL, NULL);
+	r.size++;
+	carrier = (carrier / 10);
+	r.first = q;
+	temp = q;
+	g = g->prev;
 
-	while (g != a.first)
+	while (g != NULL)
 	{
 		
 
 		carrier = carrier + g->value*c;
-		q = new BigInt::Node(carrier % 10, temp, r.first);
+		q = new BigInt::Node(carrier % 10, temp, NULL);
 		r.size++;
 		carrier = (carrier / 10);
-		temp->prev = r.first->next = q;
+		temp->prev=r.first= q;
 		temp = q;
 		g = g->prev;
 		
@@ -215,50 +232,58 @@ BigInt operator*(const BigInt& a, const int c)
 	while (carrier>0) //a maradék számjegyeinek hozzáfûzése a lista végéhez
 	{
 		
-		q = new BigInt::Node(carrier % 10, temp, r.first);
+		q = new BigInt::Node(carrier % 10, temp,NULL);
 		r.size++;
 		carrier = (carrier / 10);
-		temp->prev = r.first->next = q;
+		temp->prev = r.first= q;
 		temp = q;
 	}
 	return r;
 }
 //szorzás
+//bemenet:const BigInt&, const BigInt&
+//kimenet:BigInt
+//Az operátor két BigInt-et szoroz össze.
 BigInt operator*(const BigInt& a, const BigInt& b)
 {  
-	BigInt t("0"), r;
+	BigInt t, r;
 	BigInt::Node* pr;
 	BigInt::Node* pt;	
-	BigInt::Node* g = b.last->prev;
+	BigInt::Node* g = b.last;
 	r.size = 0;
-	BigInt::Node* temp=r.last;
-	while (g!=b.first)
-	{		
-			
-		
+	BigInt::Node* temp;
+	t = (a*g->value);
+	pt = t.last;
+	temp=r.first=pr = new BigInt::Node(pt->value, NULL, NULL);
+	r.size++;	
+	if(pt!=t.first)pt->prev->next = NULL;
+	t.last = pt->prev;
+	delete pt;	
+	g = g->prev;
+	while (g!=NULL)
+	{			
 		t=(t + (a*g->value));
-		pt = t.last->prev;		
-		pr = new BigInt::Node(pt->value,temp, r.first);
-		r.size++;		
-		temp->prev = r.first->next = pr;
+		pt = t.last;		
+		temp->prev = r.first =pr = new BigInt::Node(pt->value,temp,NULL);
+		r.size++;	
 		temp = pr;
-		t.last->prev = pt->prev;
-		pt->prev->next = t.last;
-		g = g->prev;
+		t.last = pt->prev;
+		if(pt!=t.first)pt->prev->next = NULL;		
 		delete pt;
+		g = g->prev;
 	}
-	pt = t.last->prev;	
-	while (pt != t.first)
+	pt = t.last;	
+	while (pt != NULL)
 	{
 		
 		
-		pr = new BigInt::Node(pt->value, temp, r.first);
+		pr = new BigInt::Node(pt->value, temp, NULL);
 		r.size++;		
-		temp->prev = r.first->next = pr;
+		temp->prev = r.first= pr;
 		temp = pr;
 		pt = pt->prev;
-	}	
-	
+	}
+	t.~BigInt();
 	return r;
 	
 	

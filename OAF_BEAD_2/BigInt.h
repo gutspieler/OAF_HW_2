@@ -14,10 +14,8 @@ public:
 	//nulla hosszú lista létrehozása
 	BigInt()
 	{
-		first = new Node();
-		last = new Node();
-		first->next = last;
-		last->prev = first;
+		first = NULL;
+		last = NULL;
 	}
 	//konstruktor
 	//a paraméterül kapott stringnek megfelelõ lista létrehozása
@@ -85,30 +83,26 @@ private:
 		friend struct const_iterator;
 		friend class BigInt;
 
-		inline iterator(Node* x = 0) :rep(x){}
-		inline iterator(const iterator& x) : rep(x.rep) {}
-		inline iterator& operator=(const iterator& x)
+		iterator(Node* x = 0) :rep(x){}
+		iterator(const iterator& x) : rep(x.rep) {}
+		iterator& operator=(const iterator& x)
 		{
 			rep = x.rep; return *this;
 		}
-		inline iterator& operator++()
+		iterator& operator++()
 		{
 			rep = rep->next; return *this;
 		}
-		inline iterator operator++(int)
+		iterator operator++(int)
 		{
 			iterator tmp(*this); rep = rep->next; return tmp;
 		}
-		inline iterator operator--()
-		{
-			rep = rep->prev; return *this;
-		}
-		inline int& operator*() const { return rep->value; }
-		inline bool operator==(const iterator& x) const
+		int& operator*() const { return rep->value; }
+		bool operator==(const iterator& x) const
 		{
 			return rep == x.rep;
 		}
-		inline bool operator!=(const iterator& x) const
+		bool operator!=(const iterator& x) const
 		{
 			return rep != x.rep;
 		}
@@ -121,48 +115,41 @@ private:
 	public:
 		friend struct iterator;
 
-		inline const_iterator(const Node* x = 0) :rep(x){}
-		inline const_iterator(const const_iterator& x) : rep(x.rep) {}
-		inline const_iterator(const iterator& x) : rep(x.rep){}
-		inline const_iterator& operator=(const const_iterator& x)
+		const_iterator(const Node* x = 0) :rep(x){}
+		const_iterator(const const_iterator& x) : rep(x.rep) {}
+		const_iterator(const iterator& x) : rep(x.rep){}
+		const_iterator& operator=(const const_iterator& x)
 		{
 			rep = x.rep; return *this;
 		}
-		inline const_iterator& operator=(const iterator& x)
+		const_iterator& operator=(const iterator& x)
 		{
 			rep = x.rep; return *this;
 		}
-		inline const_iterator& operator++()
+		const_iterator& operator++()
 		{
 			rep = rep->next; return *this;
 		}
-		inline const_iterator operator++(int)
+		const_iterator operator++(int)
 		{
 			const_iterator tmp(*this); rep = rep->next; return tmp;
 		}
-		inline const_iterator& operator--()
-		{
-			rep = rep->prev; return *this;
-		}
-		inline const int& operator*() const { return rep->value; }
-		inline bool operator==(const const_iterator& x) const
+		
+		const int& operator*() const { return rep->value; }
+		bool operator==(const const_iterator& x) const
 		{
 			return rep == x.rep;
 		}
-		inline bool operator!=(const const_iterator& x) const
+		bool operator!=(const const_iterator& x) const
 		{
 			return rep != x.rep;
 		}
 
 	};
-	inline void push_back(const Node& a)
-	{
-		
-	}
-	inline iterator begin() { return first->next; }
-	inline iterator end() { return last->next; }
-	inline const_iterator begin() const { return first->next; }
-	inline const_iterator end() const { return last->next; }
+	iterator begin() { return first; }
+	iterator end() { return NULL; }
+	const_iterator begin() const { return first; }
+	const_iterator end() const { return NULL; }
 
 	
 };

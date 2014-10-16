@@ -20,6 +20,9 @@
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="iterator.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{278B0D15-C4E8-4BEA-B5C9-20E747A51E1F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
